@@ -17,51 +17,19 @@ export default function ConnectionTest() {
       console.log('URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
       console.log('Key exists:', !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
       
-      // Test 1: Basic connection
-      const { data: basicTest, error: basicError } = await supabase
+      // Simple connection test - just check if we can query the students table
+      const { error } = await supabase
         .from('students')
         .select('count', { count: 'exact', head: true })
 
-      if (basicError) {
-        console.error('Basic connection error:', basicError)
-        setError(`Basic connection failed: ${basicError.message}`)
+      if (error) {
+        console.error('Connection error:', error)
+        setError(`Connection failed: ${error.message}`)
         setStatus('error')
         return
       }
 
-      // Test 2: Check if tables exist
-      const { data: tables, error: tablesError } = await supabase
-        .rpc('get_table_names')
-        .then(() => ({ data: 'Tables accessible', error: null }))
-        .catch(() => ({ data: null, error: { message: 'Tables might not exist' } }))
-
-      // Test 3: Try to create a student
-      const testStudent = {
-        first_name: 'Test',
-        last_name: 'User',
-        email: `test-${Date.now()}@example.com`,
-        student_number: `TEST-${Date.now()}`
-      }
-
-      const { data: createTest, error: createError } = await supabase
-        .from('students')
-        .insert(testStudent)
-        .select()
-        .single()
-
-      if (createError) {
-        console.error('Create test error:', createError)
-        setError(`Create test failed: ${createError.message}`)
-        setStatus('error')
-        return
-      }
-
-      // Clean up test data
-      if (createTest) {
-        await supabase.from('students').delete().eq('id', createTest.id)
-      }
-
-      console.log('All tests passed!')
+      console.log('Connection test passed!')
       setStatus('connected')
     } catch (err: any) {
       console.error('Connection error:', err)

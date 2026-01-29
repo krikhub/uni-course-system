@@ -28,7 +28,7 @@ export default function Dashboard() {
     setActiveModal('student-form')
   }
 
-  const handleStudentFormSubmit = (student: Student) => {
+  const handleStudentFormSubmit = () => {
     setActiveModal(null)
     setEditingStudent(null)
     // Refresh will happen automatically via component re-render
