@@ -1,25 +1,42 @@
 export interface Student {
   id: string
-  name: string
+  first_name: string
+  last_name: string
   email: string
+  student_number: string
+  created_at: string
+  updated_at: string
 }
 
 export interface Lecturer {
   id: string
-  name: string
+  first_name: string
+  last_name: string
   email: string
+  department: string
+  created_at: string
+  updated_at: string
 }
 
 export interface Course {
   id: string
-  lecturer_id: string | null
   title: string
+  description: string
+  lecturer_id: string
   max_participants: number
+  start_date: string
+  end_date: string
+  created_at: string
+  updated_at: string
 }
 
 export interface Enrollment {
+  id: string
   student_id: string
   course_id: string
+  enrollment_date: string
+  created_at: string
+  updated_at: string
 }
 
 // Database types for Supabase
@@ -28,23 +45,23 @@ export interface Database {
     Tables: {
       students: {
         Row: Student
-        Insert: Omit<Student, 'id'> & { id?: string }
-        Update: Partial<Omit<Student, 'id'>>
+        Insert: Omit<Student, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Student, 'id' | 'created_at'>>
       }
       lecturers: {
         Row: Lecturer
-        Insert: Omit<Lecturer, 'id'> & { id?: string }
-        Update: Partial<Omit<Lecturer, 'id'>>
+        Insert: Omit<Lecturer, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Lecturer, 'id' | 'created_at'>>
       }
       courses: {
         Row: Course
-        Insert: Omit<Course, 'id'> & { id?: string }
-        Update: Partial<Omit<Course, 'id'>>
+        Insert: Omit<Course, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Course, 'id' | 'created_at'>>
       }
       enrollments: {
         Row: Enrollment
-        Insert: Enrollment
-        Update: Partial<Enrollment>
+        Insert: Omit<Enrollment, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Enrollment, 'id' | 'created_at'>>
       }
     }
   }
