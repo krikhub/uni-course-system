@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-import { Enrollment } from '@/types/database'
+import { Enrollment } from '@/models/Enrollment'
 
 /**
  * EnrollmentService - Vereinfachte Version

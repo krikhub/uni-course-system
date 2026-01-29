@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Student, Course } from '@/types/database'
+import { Student } from '@/models/Student'
+import { Course } from '@/models/Course'
 import StudentList from './students/StudentList'
 import StudentForm from './students/StudentForm'
 import CourseList from './courses/CourseList'
@@ -31,7 +32,6 @@ export default function Dashboard() {
   const handleStudentFormSubmit = () => {
     setActiveModal(null)
     setEditingStudent(null)
-    // Refresh will happen automatically via component re-render
   }
 
   const handleStudentFormCancel = () => {

@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-import { Lecturer } from '@/types/database'
+import { Lecturer } from '@/models/Lecturer'
 
 /**
  * LecturerService - Vereinfachte Version

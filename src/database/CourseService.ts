@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-import { Course } from '@/types/database'
+import { Course } from '@/models/Course'
 
 /**
  * CourseService - Vereinfachte Version

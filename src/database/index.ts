@@ -1,5 +1,4 @@
-// Vereinfachte Service-Exports
-// Keine komplexe Factory - einfache Singleton-Instanzen
+// Database Services - Singleton-Instanzen für einfache Nutzung
 
 export { studentService } from './StudentService'
 export { courseService } from './CourseService'

@@ -1,11 +1,11 @@
 import { supabase } from '@/lib/supabase'
-import { Student } from '@/types/database'
+import { Student } from '@/models/Student'
 
 /**
- * StudentService - Vereinfachte Version
+ * StudentService - Database Layer für Student-Operationen
  * 
- * SOLID-Prinzipien die BEIBEHALTEN werden:
- * - Single Responsibility: Nur Student-bezogene Operationen
+ * SOLID-Prinzipien:
+ * - Single Responsibility: Nur Student-bezogene Datenbankoperationen
  * - Open/Closed: Erweiterbar für neue Student-Features
  */
 export class StudentService {
@@ -38,7 +38,7 @@ export class StudentService {
   }
 
   async createStudent(data: Omit<Student, 'id' | 'created_at' | 'updated_at'>): Promise<Student> {
-    // Business Logic Validation (wichtig!)
+    // Business Logic Validation
     if (!data.email || !data.first_name || !data.last_name || !data.student_number) {
       throw new Error('All required fields must be provided')
     }

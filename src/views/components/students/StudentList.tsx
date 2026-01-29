@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Student } from '@/types/database'
-import { studentService } from '@/services'
+import { Student } from '@/models/Student'
+import { StudentController } from '@/controllers/StudentController'
 
 interface StudentListProps {
   onStudentSelect?: (student: Student) => void
@@ -14,8 +14,8 @@ export default function StudentList({ onStudentSelect, onStudentEdit, onStudentD
   const [students, setStudents] = useState<Student[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
-  // Verwende die importierte Service-Instanz direkt
+  
+  const studentController = new StudentController()
 
   useEffect(() => {
     loadStudents()
@@ -25,7 +25,7 @@ export default function StudentList({ onStudentSelect, onStudentEdit, onStudentD
     try {
       setLoading(true)
       setError(null)
-      const data = await studentService.getAllStudents()
+      const data = await studentController.getAllStudents()
       setStudents(data)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Fehler beim Laden der Studenten'
@@ -39,7 +39,7 @@ export default function StudentList({ onStudentSelect, onStudentEdit, onStudentD
     if (!confirm('Sind Sie sicher, dass Sie diesen Studenten löschen möchten?')) return
 
     try {
-      await studentService.deleteStudent(studentId)
+      await studentController.deleteStudent(studentId)
       setStudents(students.filter(s => s.id !== studentId))
       onStudentDelete?.(studentId)
     } catch (err) {

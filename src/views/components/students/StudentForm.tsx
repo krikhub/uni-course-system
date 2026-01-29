@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Student } from '@/types/database'
-import { studentService } from '@/services'
+import { Student } from '@/models/Student'
+import { StudentController } from '@/controllers/StudentController'
 
 interface StudentFormProps {
   student?: Student | null
@@ -19,8 +19,8 @@ export default function StudentForm({ student, onSubmit, onCancel }: StudentForm
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  // Verwende die importierte Service-Instanz direkt
+  
+  const studentController = new StudentController()
   const isEditing = !!student
 
   useEffect(() => {
@@ -39,24 +39,17 @@ export default function StudentForm({ student, onSubmit, onCancel }: StudentForm
     setLoading(true)
     setError(null)
 
-    console.log('Form submitted with data:', formData)
-    console.log('Is editing:', isEditing)
-
     try {
       let result: Student
       
       if (isEditing) {
-        console.log('Updating student:', student?.id)
-        result = await studentService.updateStudent(student.id, formData)
+        result = await studentController.updateStudent(student.id, formData)
       } else {
-        console.log('Creating new student')
-        result = await studentService.createStudent(formData)
+        result = await studentController.createStudent(formData)
       }
       
-      console.log('Operation successful:', result)
       onSubmit(result)
     } catch (err) {
-      console.error('Form submission error:', err)
       const errorMessage = err instanceof Error ? err.message : 'Fehler beim Speichern des Studenten'
       setError(errorMessage)
     } finally {

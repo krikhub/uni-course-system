@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Student, Course, Enrollment } from '@/types/database'
-import { enrollmentService, studentService, courseService } from '@/services'
+import { Student } from '@/models/Student'
+import { Course } from '@/models/Course'
+import { Enrollment } from '@/models/Enrollment'
+import { enrollmentService, studentService, courseService } from '@/database'
 
 interface EnrollmentWithDetails extends Enrollment {
   student_name?: string

@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Course } from '@/types/database'
-import { courseService, lecturerService, enrollmentService } from '@/services'
+import { Course } from '@/models/Course'
+import { courseService, lecturerService, enrollmentService } from '@/database'
 
 interface CourseWithDetails extends Course {
   lecturer_name?: string
