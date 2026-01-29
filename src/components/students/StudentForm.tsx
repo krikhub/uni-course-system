@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Student } from '@/types/database'
-import { getStudentService } from '@/services/ServiceFactory'
-import { ServiceError } from '@/models/interfaces'
+import { studentService } from '@/services'
 
 interface StudentFormProps {
   student?: Student | null
@@ -21,7 +20,7 @@ export default function StudentForm({ student, onSubmit, onCancel }: StudentForm
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const studentService = getStudentService()
+  // Verwende die importierte Service-Instanz direkt
   const isEditing = !!student
 
   useEffect(() => {
@@ -58,7 +57,7 @@ export default function StudentForm({ student, onSubmit, onCancel }: StudentForm
       onSubmit(result)
     } catch (err) {
       console.error('Form submission error:', err)
-      const errorMessage = err instanceof ServiceError ? err.message : 'Fehler beim Speichern des Studenten'
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Speichern des Studenten'
       setError(errorMessage)
     } finally {
       setLoading(false)

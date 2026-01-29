@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Student } from '@/types/database'
-import { getStudentService } from '@/services/ServiceFactory'
-import { ServiceError } from '@/models/interfaces'
+import { studentService } from '@/services'
 
 interface StudentListProps {
   onStudentSelect?: (student: Student) => void
@@ -16,7 +15,7 @@ export default function StudentList({ onStudentSelect, onStudentEdit, onStudentD
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const studentService = getStudentService()
+  // Verwende die importierte Service-Instanz direkt
 
   useEffect(() => {
     loadStudents()
@@ -29,7 +28,7 @@ export default function StudentList({ onStudentSelect, onStudentEdit, onStudentD
       const data = await studentService.getAllStudents()
       setStudents(data)
     } catch (err) {
-      const errorMessage = err instanceof ServiceError ? err.message : 'Fehler beim Laden der Studenten'
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Laden der Studenten'
       setError(errorMessage)
     } finally {
       setLoading(false)
@@ -44,7 +43,7 @@ export default function StudentList({ onStudentSelect, onStudentEdit, onStudentD
       setStudents(students.filter(s => s.id !== studentId))
       onStudentDelete?.(studentId)
     } catch (err) {
-      const errorMessage = err instanceof ServiceError ? err.message : 'Fehler beim Löschen des Studenten'
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Löschen des Studenten'
       setError(errorMessage)
     }
   }

@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Student, Course, Enrollment } from '@/types/database'
-import { getEnrollmentService, getStudentService, getCourseService } from '@/services/ServiceFactory'
-import { ServiceError } from '@/models/interfaces'
+import { enrollmentService, studentService, courseService } from '@/services'
 
 interface EnrollmentWithDetails extends Enrollment {
   student_name?: string
@@ -24,9 +23,7 @@ export default function EnrollmentManager({ studentId, courseId }: EnrollmentMan
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const enrollmentService = getEnrollmentService()
-  const studentService = getStudentService()
-  const courseService = getCourseService()
+  // Verwende die importierten Service-Instanzen direkt
 
   useEffect(() => {
     loadInitialData()
@@ -49,7 +46,7 @@ export default function EnrollmentManager({ studentId, courseId }: EnrollmentMan
       setStudents(studentsData)
       setCourses(coursesData)
     } catch (err) {
-      const errorMessage = err instanceof ServiceError ? err.message : 'Fehler beim Laden der Daten'
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Laden der Daten'
       setError(errorMessage)
     }
   }
@@ -73,7 +70,7 @@ export default function EnrollmentManager({ studentId, courseId }: EnrollmentMan
 
       setEnrollments(enrichedEnrollments)
     } catch (err) {
-      const errorMessage = err instanceof ServiceError ? err.message : 'Fehler beim Laden der Einschreibungen'
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Laden der Einschreibungen'
       setError(errorMessage)
     } finally {
       setLoading(false)
@@ -99,7 +96,7 @@ export default function EnrollmentManager({ studentId, courseId }: EnrollmentMan
 
       setEnrollments(enrichedEnrollments)
     } catch (err) {
-      const errorMessage = err instanceof ServiceError ? err.message : 'Fehler beim Laden der Einschreibungen'
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Laden der Einschreibungen'
       setError(errorMessage)
     } finally {
       setLoading(false)
@@ -123,7 +120,7 @@ export default function EnrollmentManager({ studentId, courseId }: EnrollmentMan
         await loadCourseEnrollments()
       }
     } catch (err) {
-      const errorMessage = err instanceof ServiceError ? err.message : 'Fehler beim Einschreiben des Studenten'
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Einschreiben des Studenten'
       setError(errorMessage)
     }
   }
@@ -136,7 +133,7 @@ export default function EnrollmentManager({ studentId, courseId }: EnrollmentMan
       await enrollmentService.unenrollStudent(enrollment.student_id, enrollment.course_id)
       setEnrollments(enrollments.filter(e => e.id !== enrollment.id))
     } catch (err) {
-      const errorMessage = err instanceof ServiceError ? err.message : 'Fehler beim Abmelden des Studenten'
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Abmelden des Studenten'
       setError(errorMessage)
     }
   }

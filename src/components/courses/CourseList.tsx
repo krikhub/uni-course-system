@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Course } from '@/types/database'
-import { getCourseService, getLecturerService, getEnrollmentService } from '@/services/ServiceFactory'
-import { ServiceError } from '@/models/interfaces'
+import { courseService, lecturerService, enrollmentService } from '@/services'
 
 interface CourseWithDetails extends Course {
   lecturer_name?: string
@@ -30,9 +29,7 @@ export default function CourseList({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const courseService = getCourseService()
-  const lecturerService = getLecturerService()
-  const enrollmentService = getEnrollmentService()
+  // Verwende die importierten Service-Instanzen direkt
 
   useEffect(() => {
     loadCourses()
@@ -65,7 +62,7 @@ export default function CourseList({
 
       setCourses(enrichedCourses)
     } catch (err) {
-      const errorMessage = err instanceof ServiceError ? err.message : 'Fehler beim Laden der Kurse'
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Laden der Kurse'
       setError(errorMessage)
     } finally {
       setLoading(false)
@@ -80,7 +77,7 @@ export default function CourseList({
       setCourses(courses.filter(c => c.id !== courseId))
       onCourseDelete?.(courseId)
     } catch (err) {
-      const errorMessage = err instanceof ServiceError ? err.message : 'Fehler beim Löschen des Kurses'
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Löschen des Kurses'
       setError(errorMessage)
     }
   }
@@ -92,7 +89,7 @@ export default function CourseList({
       await enrollmentService.enrollStudent(selectedStudentId, courseId)
       await loadCourses() // Refresh to update enrollment counts
     } catch (err) {
-      const errorMessage = err instanceof ServiceError ? err.message : 'Fehler beim Einschreiben des Studenten'
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Einschreiben des Studenten'
       setError(errorMessage)
     }
   }
