@@ -24,12 +24,19 @@ export class EnrollmentService {
     // Check if course exists
     const { data: course, error: courseError } = await supabase
       .from('courses')
-      .select('id, max_participants')
+      .select('id, max_participants, end_date')
       .eq('id', courseId)
       .single()
 
     if (courseError || !course) {
       throw new Error('Course not found')
+    }
+
+    // Check if course has already ended
+    const currentDate = new Date()
+    const courseEndDate = new Date(course.end_date)
+    if (courseEndDate < currentDate) {
+      throw new Error('Einschreibung in bereits abgelaufene Kurse ist nicht möglich')
     }
 
     // Check if already enrolled

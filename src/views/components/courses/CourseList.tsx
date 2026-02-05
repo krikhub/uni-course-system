@@ -8,6 +8,7 @@ interface CourseWithDetails extends Course {
   lecturer_name?: string
   enrollment_count?: number
   is_full?: boolean
+  is_expired?: boolean
 }
 
 interface CourseListProps {
@@ -50,12 +51,15 @@ export default function CourseList({
         coursesData.map(async (course) => {
           const lecturer = lecturersData.find(l => l.id === course.lecturer_id)
           const enrollmentCount = await enrollmentService.getCourseEnrollments(course.id)
+          const currentDate = new Date()
+          const courseEndDate = new Date(course.end_date)
           
           return {
             ...course,
             lecturer_name: lecturer ? `${lecturer.first_name} ${lecturer.last_name}` : 'Unknown',
             enrollment_count: enrollmentCount.length,
-            is_full: enrollmentCount.length >= course.max_participants
+            is_full: enrollmentCount.length >= course.max_participants,
+            is_expired: courseEndDate < currentDate
           }
         })
       )
@@ -166,6 +170,11 @@ export default function CourseList({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
                       {formatDate(course.start_date)} - {formatDate(course.end_date)}
+                      {course.is_expired && (
+                        <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                          Abgelaufen
+                        </span>
+                      )}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -179,13 +188,18 @@ export default function CourseList({
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                    {showEnrollmentActions && selectedStudentId && !course.is_full && (
+                    {showEnrollmentActions && selectedStudentId && !course.is_full && !course.is_expired && (
                       <button
                         onClick={() => handleEnroll(course.id)}
                         className="text-green-600 hover:text-green-900"
                       >
                         Einschreiben
                       </button>
+                    )}
+                    {showEnrollmentActions && selectedStudentId && (course.is_full || course.is_expired) && (
+                      <span className="text-gray-400">
+                        {course.is_expired ? 'Abgelaufen' : 'Voll'}
+                      </span>
                     )}
                     {onCourseSelect && (
                       <button

@@ -187,11 +187,19 @@ export default function EnrollmentManager({ studentId, courseId }: EnrollmentMan
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Kurs auswählen</option>
-              {courses.map(course => (
-                <option key={course.id} value={course.id}>
-                  {course.title}
-                </option>
-              ))}
+              {courses.map(course => {
+                const isExpired = new Date(course.end_date) < new Date()
+                return (
+                  <option 
+                    key={course.id} 
+                    value={course.id}
+                    disabled={isExpired}
+                    style={isExpired ? { color: '#9CA3AF' } : {}}
+                  >
+                    {course.title}{isExpired ? ' (Abgelaufen)' : ''}
+                  </option>
+                )
+              })}
             </select>
           </div>
 
