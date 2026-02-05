@@ -63,21 +63,43 @@ export default function StudentForm({ student, onSubmit, onCancel }: StudentForm
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">
-        {isEditing ? 'Student bearbeiten' : 'Neuen Studenten hinzufügen'}
-      </h3>
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900">
+            {isEditing ? 'Student bearbeiten' : 'Neuen Studenten hinzufügen'}
+          </h3>
+          <p className="text-sm text-gray-500 mt-1">
+            {isEditing ? 'Bearbeiten Sie die Studentendaten' : 'Fügen Sie einen neuen Studenten hinzu'}
+          </p>
+        </div>
+        <button
+          onClick={onCancel}
+          className="text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
 
       {error && (
-        <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-4">
-          <div className="text-red-800">{error}</div>
+        <div className="mb-6 flex items-start gap-3 p-4 bg-red-50 border border-red-200/60 rounded-lg">
+          <div className="flex-shrink-0">
+            <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <p className="text-sm text-red-800">{error}</p>
+          </div>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">
               Vorname *
             </label>
             <input
@@ -87,12 +109,13 @@ export default function StudentForm({ student, onSubmit, onCancel }: StudentForm
               value={formData.first_name}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="input"
+              placeholder="Max"
             />
           </div>
 
-          <div>
-            <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="space-y-2">
+            <label htmlFor="last_name" className="block text-sm font-medium text-gray-700">
               Nachname *
             </label>
             <input
@@ -102,14 +125,15 @@ export default function StudentForm({ student, onSubmit, onCancel }: StudentForm
               value={formData.last_name}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="input"
+              placeholder="Mustermann"
             />
           </div>
         </div>
 
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            E-Mail *
+        <div className="space-y-2">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            E-Mail-Adresse *
           </label>
           <input
             type="email"
@@ -118,12 +142,13 @@ export default function StudentForm({ student, onSubmit, onCancel }: StudentForm
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="input"
+            placeholder="max.mustermann@university.de"
           />
         </div>
 
-        <div>
-          <label htmlFor="student_number" className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="space-y-2">
+          <label htmlFor="student_number" className="block text-sm font-medium text-gray-700">
             Matrikelnummer *
           </label>
           <input
@@ -133,24 +158,32 @@ export default function StudentForm({ student, onSubmit, onCancel }: StudentForm
             value={formData.student_number}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="input font-mono"
+            placeholder="123456789"
           />
         </div>
 
-        <div className="flex justify-end space-x-3 pt-4">
+        <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
+            className="btn-secondary"
           >
             Abbrechen
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Speichern...' : (isEditing ? 'Aktualisieren' : 'Erstellen')}
+            {loading ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                Speichern...
+              </div>
+            ) : (
+              isEditing ? 'Aktualisieren' : 'Erstellen'
+            )}
           </button>
         </div>
       </form>

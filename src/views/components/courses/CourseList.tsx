@@ -104,130 +104,173 @@ export default function CourseList({
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center p-8">
-        <div className="text-gray-600">Kurse werden geladen...</div>
+      <div className="card">
+        <div className="flex items-center justify-center p-12">
+          <div className="flex items-center gap-3 text-gray-600">
+            <div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+            <span className="text-sm font-medium">Kurse werden geladen...</span>
+          </div>
+        </div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-        <div className="text-red-800 font-medium">Fehler</div>
-        <div className="text-red-600">{error}</div>
-        <button 
-          onClick={loadCourses}
-          className="mt-2 px-3 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200"
-        >
-          Erneut versuchen
-        </button>
+      <div className="card">
+        <div className="card-content">
+          <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200/60 rounded-lg">
+            <div className="flex-shrink-0">
+              <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <h4 className="text-sm font-medium text-red-800">Fehler beim Laden</h4>
+              <p className="text-sm text-red-700 mt-1">{error}</p>
+              <button 
+                onClick={loadCourses}
+                className="mt-3 px-3 py-1.5 text-xs font-medium bg-red-100 text-red-800 rounded-md hover:bg-red-200 transition-colors"
+              >
+                Erneut versuchen
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="bg-white rounded-lg shadow">
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h3 className="text-lg font-medium text-gray-900">Kurse</h3>
+    <div className="card">
+      <div className="card-header">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Kurse</h3>
+            <p className="text-sm text-gray-500 mt-1">{courses.length} Kurse verfügbar</p>
+          </div>
+        </div>
       </div>
       
       {courses.length === 0 ? (
-        <div className="p-6 text-center text-gray-500">
-          Keine Kurse gefunden
+        <div className="card-content">
+          <div className="text-center py-12">
+            <svg className="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <h4 className="text-sm font-medium text-gray-900 mb-1">Keine Kurse gefunden</h4>
+            <p className="text-sm text-gray-500">Fügen Sie den ersten Kurs hinzu, um zu beginnen.</p>
+          </div>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Kurs
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Dozent
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Termine
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Kapazität
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Aktionen
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {courses.map((course) => (
-                <tr key={course.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">{course.title}</div>
-                    <div className="text-sm text-gray-500">{course.description}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{course.lecturer_name}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
-                      {formatDate(course.start_date)} - {formatDate(course.end_date)}
-                      {course.is_expired && (
-                        <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                          Abgelaufen
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
-                      {course.enrollment_count} / {course.max_participants}
-                      {course.is_full && (
-                        <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                          Voll
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                    {showEnrollmentActions && selectedStudentId && !course.is_full && !course.is_expired && (
-                      <button
-                        onClick={() => handleEnroll(course.id)}
-                        className="text-green-600 hover:text-green-900"
-                      >
-                        Einschreiben
-                      </button>
-                    )}
-                    {showEnrollmentActions && selectedStudentId && (course.is_full || course.is_expired) && (
-                      <span className="text-gray-400">
-                        {course.is_expired ? 'Abgelaufen' : 'Voll'}
-                      </span>
-                    )}
-                    {onCourseSelect && (
-                      <button
-                        onClick={() => onCourseSelect(course)}
-                        className="text-blue-600 hover:text-blue-900"
-                      >
-                        Auswählen
-                      </button>
-                    )}
-                    {onCourseEdit && (
-                      <button
-                        onClick={() => onCourseEdit(course)}
-                        className="text-indigo-600 hover:text-indigo-900"
-                      >
-                        Bearbeiten
-                      </button>
-                    )}
-                    <button
-                      onClick={() => handleDelete(course.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Löschen
-                    </button>
-                  </td>
+        <div className="overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead>
+                <tr className="border-b border-gray-100">
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Kurs
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Dozent
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Termine
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Kapazität
+                  </th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Aktionen
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {courses.map((course) => (
+                  <tr key={course.id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                          </svg>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-medium text-gray-900 mb-1">{course.title}</div>
+                          <div className="text-sm text-gray-500 line-clamp-2">{course.description}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-700">{course.lecturer_name}</div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-700">
+                        <div>{formatDate(course.start_date)}</div>
+                        <div className="text-xs text-gray-500">bis {formatDate(course.end_date)}</div>
+                        {course.is_expired && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 mt-1">
+                            Abgelaufen
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <div className="text-sm text-gray-700">
+                          {course.enrollment_count} / {course.max_participants}
+                        </div>
+                        {course.is_full && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                            Voll
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-end gap-2">
+                        {showEnrollmentActions && selectedStudentId && !course.is_full && !course.is_expired && (
+                          <button
+                            onClick={() => handleEnroll(course.id)}
+                            className="px-3 py-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-md transition-colors"
+                          >
+                            Einschreiben
+                          </button>
+                        )}
+                        {showEnrollmentActions && selectedStudentId && (course.is_full || course.is_expired) && (
+                          <span className="px-3 py-1.5 text-xs text-gray-400">
+                            {course.is_expired ? 'Abgelaufen' : 'Voll'}
+                          </span>
+                        )}
+                        {onCourseSelect && (
+                          <button
+                            onClick={() => onCourseSelect(course)}
+                            className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors"
+                          >
+                            Auswählen
+                          </button>
+                        )}
+                        {onCourseEdit && (
+                          <button
+                            onClick={() => onCourseEdit(course)}
+                            className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors"
+                          >
+                            Bearbeiten
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(course.id)}
+                          className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-md transition-colors"
+                        >
+                          Löschen
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
