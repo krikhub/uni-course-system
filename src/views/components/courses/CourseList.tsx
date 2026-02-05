@@ -190,26 +190,26 @@ export default function CourseList({
                   <tr key={course.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-10 h-10 bg-[#9DA69F]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <svg className="w-5 h-5 text-[#565D56]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                           </svg>
                         </div>
                         <div className="min-w-0 flex-1">
-                          <div className="text-sm font-medium text-gray-900 mb-1">{course.title}</div>
-                          <div className="text-sm text-gray-500 line-clamp-2">{course.description}</div>
+                          <div className="text-sm font-medium text-[#383B39] mb-1">{course.title}</div>
+                          <div className="text-sm text-[#565D56] line-clamp-2">{course.description}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-700">{course.lecturer_name}</div>
+                      <div className="text-sm text-[#565D56]">{course.lecturer_name}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-700">
+                      <div className="text-sm text-[#565D56]">
                         <div>{formatDate(course.start_date)}</div>
-                        <div className="text-xs text-gray-500">bis {formatDate(course.end_date)}</div>
+                        <div className="text-xs text-[#9DA69F]">bis {formatDate(course.end_date)}</div>
                         {course.is_expired && (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 mt-1">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#9DA69F]/20 text-[#565D56] mt-1">
                             Abgelaufen
                           </span>
                         )}
@@ -217,11 +217,11 @@ export default function CourseList({
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
-                        <div className="text-sm text-gray-700">
+                        <div className="text-sm text-[#565D56]">
                           {course.enrollment_count} / {course.max_participants}
                         </div>
                         {course.is_full && (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#383B39]/10 text-[#383B39]">
                             Voll
                           </span>
                         )}
@@ -232,20 +232,20 @@ export default function CourseList({
                         {showEnrollmentActions && selectedStudentId && !course.is_full && !course.is_expired && (
                           <button
                             onClick={() => handleEnroll(course.id)}
-                            className="px-3 py-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-md transition-colors"
+                            className="px-3 py-1.5 text-xs font-medium text-[#565D56] bg-[#565D56]/10 hover:bg-[#565D56]/20 rounded-md transition-colors"
                           >
                             Einschreiben
                           </button>
                         )}
                         {showEnrollmentActions && selectedStudentId && (course.is_full || course.is_expired) && (
-                          <span className="px-3 py-1.5 text-xs text-gray-400">
+                          <span className="px-3 py-1.5 text-xs text-[#9DA69F]">
                             {course.is_expired ? 'Abgelaufen' : 'Voll'}
                           </span>
                         )}
                         {onCourseSelect && (
                           <button
                             onClick={() => onCourseSelect(course)}
-                            className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors"
+                            className="px-3 py-1.5 text-xs font-medium text-[#565D56] bg-[#565D56]/10 hover:bg-[#565D56]/20 rounded-md transition-colors"
                           >
                             Auswählen
                           </button>
@@ -253,14 +253,14 @@ export default function CourseList({
                         {onCourseEdit && (
                           <button
                             onClick={() => onCourseEdit(course)}
-                            className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors"
+                            className="px-3 py-1.5 text-xs font-medium text-[#565D56] bg-[#C5CDC7]/30 hover:bg-[#C5CDC7]/50 rounded-md transition-colors"
                           >
                             Bearbeiten
                           </button>
                         )}
                         <button
                           onClick={() => handleDelete(course.id)}
-                          className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-md transition-colors"
+                          className="px-3 py-1.5 text-xs font-medium text-[#383B39] bg-[#383B39]/10 hover:bg-[#383B39]/20 rounded-md transition-colors"
                         >
                           Löschen
                         </button>

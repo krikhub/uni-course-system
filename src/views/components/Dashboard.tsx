@@ -77,16 +77,16 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50/30">
+    <div className="min-h-screen bg-[#F0F4F1]">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200/60 sticky top-0 z-40">
+      <header className="bg-white/80 backdrop-blur-sm border-b border-[#C5CDC7]/60 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
+              <h1 className="text-2xl font-semibold text-[#383B39] tracking-tight">
                 Kursverwaltung
               </h1>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-[#565D56] mt-1">
                 Studenten, Kurse und Einschreibungen verwalten
               </p>
             </div>
@@ -95,7 +95,7 @@ export default function Dashboard() {
       </header>
 
       {/* Navigation */}
-      <nav className="bg-white/60 backdrop-blur-sm border-b border-gray-200/40">
+      <nav className="bg-white/60 backdrop-blur-sm border-b border-[#C5CDC7]/40">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex space-x-1">
             <button
@@ -106,8 +106,8 @@ export default function Dashboard() {
               }}
               className={`px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                 activeView === 'students'
-                  ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-600'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  ? 'bg-[#565D56]/10 text-[#383B39] border-b-2 border-[#565D56]'
+                  : 'text-[#565D56] hover:text-[#383B39] hover:bg-[#C5CDC7]/20'
               }`}
             >
               Studenten
@@ -120,8 +120,8 @@ export default function Dashboard() {
               }}
               className={`px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                 activeView === 'courses'
-                  ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-600'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  ? 'bg-[#565D56]/10 text-[#383B39] border-b-2 border-[#565D56]'
+                  : 'text-[#565D56] hover:text-[#383B39] hover:bg-[#C5CDC7]/20'
               }`}
             >
               Kurse
@@ -134,8 +134,8 @@ export default function Dashboard() {
               }}
               className={`px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                 activeView === 'enrollments'
-                  ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-600'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  ? 'bg-[#565D56]/10 text-[#383B39] border-b-2 border-[#565D56]'
+                  : 'text-[#565D56] hover:text-[#383B39] hover:bg-[#C5CDC7]/20'
               }`}
             >
               Einschreibungen
@@ -149,14 +149,14 @@ export default function Dashboard() {
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex flex-wrap items-center gap-3">
             {selectedStudent && (
-              <div className="inline-flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-800 rounded-lg border border-blue-200/60">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <div className="inline-flex items-center gap-2 px-3 py-2 bg-[#565D56]/10 text-[#383B39] rounded-lg border border-[#9DA69F]/60">
+                <div className="w-2 h-2 bg-[#565D56] rounded-full"></div>
                 <span className="text-sm font-medium">
                   {selectedStudent.first_name} {selectedStudent.last_name}
                 </span>
                 <button
                   onClick={() => setSelectedStudent(null)}
-                  className="ml-1 text-blue-600 hover:text-blue-800 transition-colors"
+                  className="ml-1 text-[#565D56] hover:text-[#383B39] transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -165,14 +165,14 @@ export default function Dashboard() {
               </div>
             )}
             {selectedCourse && (
-              <div className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-800 rounded-lg border border-emerald-200/60">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+              <div className="inline-flex items-center gap-2 px-3 py-2 bg-[#9DA69F]/20 text-[#383B39] rounded-lg border border-[#9DA69F]/60">
+                <div className="w-2 h-2 bg-[#9DA69F] rounded-full"></div>
                 <span className="text-sm font-medium">
                   {selectedCourse.title}
                 </span>
                 <button
                   onClick={() => setSelectedCourse(null)}
-                  className="ml-1 text-emerald-600 hover:text-emerald-800 transition-colors"
+                  className="ml-1 text-[#565D56] hover:text-[#383B39] transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -186,7 +186,7 @@ export default function Dashboard() {
             {activeView === 'students' && (
               <button
                 onClick={() => setActiveModal('student-form')}
-                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:ring-offset-2"
+                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-[#565D56] hover:bg-[#383B39] rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#565D56]/20 focus:ring-offset-2"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -208,8 +208,8 @@ export default function Dashboard() {
 
       {/* Modals */}
       {activeModal === 'student-form' && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
-          <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-xl border border-gray-200/60">
+        <div className="fixed inset-0 bg-[#383B39]/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+          <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-xl border border-[#C5CDC7]/60">
             <StudentForm
               student={editingStudent}
               onSubmit={handleStudentFormSubmit}

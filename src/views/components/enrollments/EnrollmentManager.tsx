@@ -8,6 +8,8 @@ import { enrollmentService, studentService, courseService } from '@/database'
 
 interface EnrollmentWithDetails extends Enrollment {
   student_name?: string
+  student_email?: string
+  student_number?: string
   course_title?: string
 }
 
@@ -35,7 +37,10 @@ export default function EnrollmentManager({ studentId, courseId }: EnrollmentMan
     if (selectedStudentId) {
       loadStudentEnrollments()
     } else if (selectedCourseId) {
-      loadCourseEnrollments()
+      loadAllCourseEnrollments()
+    } else {
+      // Load all enrollments when no specific filter is selected
+      loadAllEnrollments()
     }
   }, [selectedStudentId, selectedCourseId])
 
@@ -97,6 +102,65 @@ export default function EnrollmentManager({ studentId, courseId }: EnrollmentMan
       })
 
       setEnrollments(enrichedEnrollments)
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Laden der Einschreibungen'
+      setError(errorMessage)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // New function to load all enrollments for a course when course is selected
+  const loadAllCourseEnrollments = async () => {
+    if (!selectedCourseId) return
+
+    try {
+      setLoading(true)
+      setError(null)
+      
+      const enrollmentsData = await enrollmentService.getCourseEnrollments(selectedCourseId)
+      
+      const enrichedEnrollments = enrollmentsData.map(enrollment => {
+        const student = students.find(s => s.id === enrollment.student_id)
+        return {
+          ...enrollment,
+          student_name: student ? `${student.first_name} ${student.last_name}` : 'Unbekannter Student',
+          student_email: student?.email || 'Unbekannt',
+          student_number: student?.student_number || 'Unbekannt'
+        }
+      })
+
+      setEnrollments(enrichedEnrollments)
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Laden der Einschreibungen'
+      setError(errorMessage)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const loadAllEnrollments = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      
+      // Get all enrollments by getting enrollments for all courses
+      const allEnrollments: EnrollmentWithDetails[] = []
+      
+      for (const course of courses) {
+        const courseEnrollments = await enrollmentService.getCourseEnrollments(course.id)
+        const enrichedEnrollments = courseEnrollments.map(enrollment => {
+          const student = students.find(s => s.id === enrollment.student_id)
+          return {
+            ...enrollment,
+            student_name: student ? `${student.first_name} ${student.last_name}` : 'Unbekannter Student',
+            course_title: course.title
+          }
+        })
+        allEnrollments.push(...enrichedEnrollments)
+      }
+
+      setEnrollments(allEnrollments)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Fehler beim Laden der Einschreibungen'
       setError(errorMessage)
@@ -269,37 +333,47 @@ export default function EnrollmentManager({ studentId, courseId }: EnrollmentMan
             <div className="overflow-x-auto">
               <table className="min-w-full">
                 <thead>
-                  <tr className="border-b border-gray-100">
+                  <tr className="border-b border-[#C5CDC7]/40">
                     {!selectedStudentId && (
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-[#565D56] uppercase tracking-wider">
                         Student
                       </th>
                     )}
                     {!selectedCourseId && (
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-[#565D56] uppercase tracking-wider">
                         Kurs
                       </th>
                     )}
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    {selectedCourseId && (
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-[#565D56] uppercase tracking-wider">
+                        E-Mail
+                      </th>
+                    )}
+                    {selectedCourseId && (
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-[#565D56] uppercase tracking-wider">
+                        Matrikelnummer
+                      </th>
+                    )}
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-[#565D56] uppercase tracking-wider">
                       Einschreibungsdatum
                     </th>
-                    <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-right text-xs font-semibold text-[#565D56] uppercase tracking-wider">
                       Aktionen
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-[#C5CDC7]/30">
                   {enrollments.map((enrollment) => (
-                    <tr key={enrollment.id} className="hover:bg-gray-50/50 transition-colors">
+                    <tr key={enrollment.id} className="hover:bg-[#F0F4F1]/50 transition-colors">
                       {!selectedStudentId && (
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                              <span className="text-xs font-semibold text-blue-700">
+                            <div className="w-8 h-8 bg-[#565D56]/10 rounded-full flex items-center justify-center">
+                              <span className="text-xs font-semibold text-[#565D56]">
                                 {enrollment.student_name?.split(' ').map(n => n[0]).join('') || '?'}
                               </span>
                             </div>
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="text-sm font-medium text-[#383B39]">
                               {enrollment.student_name}
                             </div>
                           </div>
@@ -307,13 +381,27 @@ export default function EnrollmentManager({ studentId, courseId }: EnrollmentMan
                       )}
                       {!selectedCourseId && (
                         <td className="px-6 py-4">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium text-[#383B39]">
                             {enrollment.course_title}
                           </div>
                         </td>
                       )}
+                      {selectedCourseId && (
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-[#565D56]">
+                            {enrollment.student_email}
+                          </div>
+                        </td>
+                      )}
+                      {selectedCourseId && (
+                        <td className="px-6 py-4">
+                          <div className="text-sm font-mono text-[#565D56]">
+                            {enrollment.student_number}
+                          </div>
+                        </td>
+                      )}
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-700">
+                        <div className="text-sm text-[#565D56]">
                           {formatDate(enrollment.enrollment_date)}
                         </div>
                       </td>
@@ -321,7 +409,7 @@ export default function EnrollmentManager({ studentId, courseId }: EnrollmentMan
                         <div className="flex justify-end">
                           <button
                             onClick={() => handleUnenroll(enrollment)}
-                            className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-md transition-colors"
+                            className="px-3 py-1.5 text-xs font-medium text-[#383B39] bg-[#383B39]/10 hover:bg-[#383B39]/20 rounded-md transition-colors"
                           >
                             Abmelden
                           </button>
