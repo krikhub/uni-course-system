@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Course } from '@/models/Course'
 import { courseService, lecturerService, enrollmentService } from '@/database'
+import CourseEnrollmentDetails from './CourseEnrollmentDetails'
 
 interface CourseWithDetails extends Course {
   lecturer_name?: string
@@ -29,6 +30,7 @@ export default function CourseList({
   const [courses, setCourses] = useState<CourseWithDetails[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [expandedCourse, setExpandedCourse] = useState<string | null>(null)
 
   // Verwende die importierten Service-Instanzen direkt
 
@@ -92,10 +94,18 @@ export default function CourseList({
     try {
       await enrollmentService.enrollStudent(selectedStudentId, courseId)
       await loadCourses() // Refresh to update enrollment counts
+      // If this course is expanded, keep it expanded to show the updated list
+      if (expandedCourse === courseId) {
+        // The CourseEnrollmentDetails component will automatically refresh
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Fehler beim Einschreiben des Studenten'
       setError(errorMessage)
     }
+  }
+
+  const toggleCourseDetails = (courseId: string) => {
+    setExpandedCourse(expandedCourse === courseId ? null : courseId)
   }
 
   const formatDate = (dateString: string) => {
@@ -106,8 +116,8 @@ export default function CourseList({
     return (
       <div className="card">
         <div className="flex items-center justify-center p-12">
-          <div className="flex items-center gap-3 text-gray-600">
-            <div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+          <div className="flex items-center gap-3 text-[#565D56]">
+            <div className="w-5 h-5 border-2 border-[#C5CDC7] border-t-[#565D56] rounded-full animate-spin"></div>
             <span className="text-sm font-medium">Kurse werden geladen...</span>
           </div>
         </div>
@@ -119,18 +129,18 @@ export default function CourseList({
     return (
       <div className="card">
         <div className="card-content">
-          <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200/60 rounded-lg">
+          <div className="flex items-start gap-3 p-4 bg-[#383B39]/5 border border-[#9DA69F]/60 rounded-lg">
             <div className="flex-shrink-0">
-              <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-[#383B39]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div className="flex-1">
-              <h4 className="text-sm font-medium text-red-800">Fehler beim Laden</h4>
-              <p className="text-sm text-red-700 mt-1">{error}</p>
+              <h4 className="text-sm font-medium text-[#383B39]">Fehler beim Laden</h4>
+              <p className="text-sm text-[#565D56] mt-1">{error}</p>
               <button 
                 onClick={loadCourses}
-                className="mt-3 px-3 py-1.5 text-xs font-medium bg-red-100 text-red-800 rounded-md hover:bg-red-200 transition-colors"
+                className="mt-3 px-3 py-1.5 text-xs font-medium bg-[#383B39]/10 text-[#383B39] rounded-md hover:bg-[#383B39]/20 transition-colors"
               >
                 Erneut versuchen
               </button>
@@ -146,8 +156,8 @@ export default function CourseList({
       <div className="card-header">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Kurse</h3>
-            <p className="text-sm text-gray-500 mt-1">{courses.length} Kurse verfügbar</p>
+            <h3 className="text-lg font-semibold text-[#383B39]">Kurse</h3>
+            <p className="text-sm text-[#565D56] mt-1">{courses.length} Kurse verfügbar</p>
           </div>
         </div>
       </div>
@@ -155,11 +165,11 @@ export default function CourseList({
       {courses.length === 0 ? (
         <div className="card-content">
           <div className="text-center py-12">
-            <svg className="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 text-[#C5CDC7] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
-            <h4 className="text-sm font-medium text-gray-900 mb-1">Keine Kurse gefunden</h4>
-            <p className="text-sm text-gray-500">Fügen Sie den ersten Kurs hinzu, um zu beginnen.</p>
+            <h4 className="text-sm font-medium text-[#383B39] mb-1">Keine Kurse gefunden</h4>
+            <p className="text-sm text-[#565D56]">Fügen Sie den ersten Kurs hinzu, um zu beginnen.</p>
           </div>
         </div>
       ) : (
@@ -167,27 +177,27 @@ export default function CourseList({
           <div className="overflow-x-auto">
             <table className="min-w-full">
               <thead>
-                <tr className="border-b border-gray-100">
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <tr className="border-b border-[#C5CDC7]/40">
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#565D56] uppercase tracking-wider">
                     Kurs
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#565D56] uppercase tracking-wider">
                     Dozent
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#565D56] uppercase tracking-wider">
                     Termine
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#565D56] uppercase tracking-wider">
                     Kapazität
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-[#565D56] uppercase tracking-wider">
                     Aktionen
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-[#C5CDC7]/30">
                 {courses.map((course) => (
-                  <tr key={course.id} className="hover:bg-gray-50/50 transition-colors">
+                  <tr key={course.id} className="hover:bg-[#F0F4F1]/50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-start gap-3">
                         <div className="w-10 h-10 bg-[#9DA69F]/20 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -242,6 +252,14 @@ export default function CourseList({
                             {course.is_expired ? 'Abgelaufen' : 'Voll'}
                           </span>
                         )}
+                        {showEnrollmentActions && selectedStudentId && (
+                          <button
+                            onClick={() => toggleCourseDetails(course.id)}
+                            className="px-3 py-1.5 text-xs font-medium text-[#9DA69F] bg-[#9DA69F]/10 hover:bg-[#9DA69F]/20 rounded-md transition-colors"
+                          >
+                            {expandedCourse === course.id ? 'Weniger' : 'Details'}
+                          </button>
+                        )}
                         {onCourseSelect && (
                           <button
                             onClick={() => onCourseSelect(course)}
@@ -271,6 +289,22 @@ export default function CourseList({
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+      
+      {/* Show enrollment details for expanded course */}
+      {showEnrollmentActions && selectedStudentId && expandedCourse && (
+        <div className="mt-6">
+          {(() => {
+            const course = courses.find(c => c.id === expandedCourse)
+            return course ? (
+              <CourseEnrollmentDetails
+                courseId={course.id}
+                courseTitle={course.title}
+                maxParticipants={course.max_participants}
+              />
+            ) : null
+          })()}
         </div>
       )}
     </div>
